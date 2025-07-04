@@ -7,6 +7,17 @@ from joblib import load
 model = load("credit_model_small_compressed.joblib")
 scaler = load("scaler_new.joblib")
 
+input_df = pd.DataFrame([[
+    age,
+    income,
+    employment_map[employment],
+    bank_accounts,
+    emi
+]], columns=["Age", "Annual_Income", "Employment_Status", "Num_Bank_Accounts", "Total_EMI_per_month"])
+input_scaled = scaler.transform(input_df)
+st.write("Input to scaler:", input_df.columns.tolist())
+
+
 # Employment map
 employment_map = {
     "Employed": 1,
