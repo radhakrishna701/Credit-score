@@ -4,7 +4,7 @@ import pandas as pd
 from joblib import load
 
 # Load model and scaler
-model = load("credit.joblib")
+model = load("credit_model_small_compressed.joblib")
 scaler = load("scaler_new.joblib")
 
 # Employment map
