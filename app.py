@@ -45,4 +45,5 @@ if st.button("Predict Loan Approval"):
     ]], columns=["Age", "Annual_Income", "Employment_Status", "Num_Bank_Accounts", "Total_EMI_per_month"])
 
     # 🔧 FIXED: Use .values to avoid feature name check
-    input_scaled =_
+    input_scaled = scaler.transform(input_df.values)
+
