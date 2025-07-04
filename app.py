@@ -7,17 +7,6 @@ from joblib import load
 model = load("credit_model_small_compressed.joblib")
 scaler = load("scaler_new.joblib")
 
-input_df = pd.DataFrame([[
-    age,
-    income,
-    employment_map[employment],
-    bank_accounts,
-    emi
-]], columns=["Age", "Annual_Income", "Employment_Status", "Num_Bank_Accounts", "Total_EMI_per_month"])
-input_scaled = scaler.transform(input_df)
-st.write("Input to scaler:", input_df.columns.tolist())
-
-
 # Employment map
 employment_map = {
     "Employed": 1,
@@ -47,17 +36,20 @@ emi = st.number_input("Monthly EMI Required (₹)", min_value=0.0, value=10000.0
 
 # Predict
 if st.button("Predict Loan Approval"):
-    input_df = pd.DataFrame([[
+    input_df = pd.DataFrame([[ 
         age,
         income,
         employment_map[employment],
         bank_accounts,
         emi
     ]], columns=["Age", "Annual_Income", "Employment_Status", "Num_Bank_Accounts", "Total_EMI_per_month"])
-    
+
     input_scaled = scaler.transform(input_df)
     score = model.predict(input_scaled)[0]
     decision = loan_decision(score)
 
     st.subheader("Loan Decision")
     st.success(decision)
+
+    # Debug (optional)
+    st.write("Input to scaler:", input_df)
