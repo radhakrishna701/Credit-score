@@ -55,25 +55,29 @@ emi = st.number_input("Total Monthly EMI (₹)", min_value=0.0, value=10000.0, s
 # This block runs only when the user clicks the "Predict" button.
 if st.button("Predict Loan Approval", type="primary"):
     
-    # **THE FIX IS HERE:**
-    # The column names in this list MUST be IDENTICAL to the column names
-    # used when training the model. Check for case-sensitivity, spaces, or underscores.
-    # For example, if your training data used "annual income" (lowercase), you must use that here.
+    # **FINAL FIX: PASTE YOUR CORRECT COLUMN NAMES HERE**
+    # Run the `check_features.py` script to get the exact list of column names.
+    # Then, paste that list here. It must be 100% identical to the output of the script.
+    # EXAMPLE: expected_columns = ['age', 'annual_income', 'employment_status', 'num_bank_accounts', 'total_emi']
     
-    expected_columns = ["Age", "Annual_Income", "Employment_Status", "Num_Bank_Accounts", "Total_EMI_per_month"]
+    expected_columns = ["Age", "Annual_Income", "Employment_Status", "Num_Bank_Accounts", "Total_EMI_per_month"] # <-- REPLACE THIS LIST
     
-    # Create a dictionary to hold the user's input
+    # Create a dictionary to hold the user's input.
+    # The keys here don't matter as much, but it's good practice to keep them clear.
     input_data = {
-        "Age": [age],
-        "Annual_Income": [income],
-        "Employment_Status": [employment_map[employment]], # Convert text to number
-        "Num_Bank_Accounts": [bank_accounts],
-        "Total_EMI_per_month": [emi]
+        expected_columns[0]: [age],
+        expected_columns[1]: [income],
+        expected_columns[2]: [employment_map[employment]],
+        expected_columns[3]: [bank_accounts],
+        expected_columns[4]: [emi]
     }
     
-    # Create the DataFrame using the dictionary and ensure column order
+    # Create the DataFrame
     input_df = pd.DataFrame(input_data)
-    input_df = input_df[expected_columns] # This enforces the correct column order
+    
+    # This is the crucial step: ensure the DataFrame has the exact columns in the exact order.
+    # This line is no longer strictly necessary if the dictionary keys are correct, but it's a good safeguard.
+    input_df = input_df[expected_columns]
 
     try:
         # Scale the input features using the pre-fitted scaler
@@ -96,13 +100,7 @@ if st.button("Predict Loan Approval", type="primary"):
         else:
             st.error(decision)
 
-        # Optional: Uncomment to see the data being sent to the model for debugging
-        # with st.expander("Show Debug Info"):
-        #     st.write("Input DataFrame:", input_df)
-        #     st.write("Scaled Input:", input_scaled)
-        #     st.write("Predicted Score (0=High Risk, 1=Medium, 2=Low):", prediction)
-
     except Exception as e:
         st.error(f"An error occurred during prediction: {e}")
-        st.info("Please ensure the input values are correct. If the error persists, the model's expected features might not match the app's inputs.")
+        st.info("Please double-check that the `expected_columns` list in the code is 100% correct.")
 
